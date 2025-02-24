@@ -1,0 +1,128 @@
+## Sample Runbook: Data Platform Testing (Enhanced with Error Handling)
+
+**Document Version:** 1.1
+**Date Created:** 2023-10-27
+**Author:** [Your Name/Team]
+**Purpose:** This runbook outlines the steps for conducting a sample test run on the data platform, focusing on data ingestion, transformation, and query performance, including detailed error handling and debugging procedures.
+
+**1. Introduction**
+
+This runbook provides a structured approach to testing core functionalities of the data platform. It aims to verify data integrity, pipeline reliability, and query response times. This sample run focuses on a simplified scenario but can be adapted for more complex testing requirements. We will also focus on common errors and their troubleshooting.
+
+**2. Scope**
+
+* **Data Ingestion:** Testing the ingestion of sample CSV data into the staging area.
+* **Data Transformation:** Verifying the execution of a basic transformation process.
+* **Data Querying:** Evaluating the performance of a simple query on the transformed data.
+* **Target Environment:** Development/Testing Environment
+* **Error Handling:** Documenting and addressing common errors.
+
+**3. Prerequisites**
+
+* Access to the data platform's staging area, transformation engine, and query engine.
+* Sample CSV data file (e.g., `test_data.csv`).
+* A pre-defined transformation script (e.g., `transform_script.sql`).
+* A sample query (e.g., `SELECT COUNT(*) FROM transformed_table;`).
+* Logging and monitoring systems are available.
+* Access to platform documentation.
+
+**4. Roles and Responsibilities**
+
+* **Test Engineer:** Executes the runbook, documents results, and performs initial debugging.
+* **Data Engineer:** Provides support for platform issues, advanced debugging, and configuration.
+
+**5. Procedure**
+
+**5.1. Data Ingestion**
+
+1.  **Prepare Sample Data:**
+    * Ensure `test_data.csv` is located in a known location accessible to the ingestion process.
+    * Verify the data format and content match the expected schema.
+2.  **Initiate Ingestion:**
+    * Execute the data ingestion process (e.g., using a command-line tool, API call, or scheduled job).
+    * Monitor the ingestion process for errors.
+3.  **Verify Ingestion:**
+    * Check the staging area to confirm the data has been loaded.
+    * Verify the row count and data integrity.
+    * Check logs for errors.
+    * Example SQL check: `SELECT COUNT(*) FROM staging_table;`
+
+    **5.1.1. Frequent Errors and Debugging:**
+
+    * **Error:** `File not found` or `Access denied`.
+        * **Debugging:** Verify the file path and permissions. Check if the ingestion process has the necessary read access.
+    * **Error:** `Data type mismatch` or `Schema violation`.
+        * **Debugging:** Compare the CSV file's schema with the staging table's schema. Examine the log files for specific column errors. Use a data preview tool to examine the raw csv data.
+    * **Error:** `Connection timeout` or `Network error`.
+        * **Debugging:** Verify network connectivity. Check the database server's status. Examine firewall rules.
+    * **Error:** `Duplicate key violation`.
+        * **Debugging:** examine the data for duplicate primary keys. Check that the staging table has the correct primary key setup.
+
+**5.2. Data Transformation**
+
+1.  **Execute Transformation:**
+    * Run the `transform_script.sql` against the staged data.
+    * Monitor the transformation process for errors.
+2.  **Verify Transformation:**
+    * Check the target table (`transformed_table`) to confirm the data has been transformed.
+    * Verify the row count and data integrity.
+    * Validate the transformed data against expected results.
+    * Check logs for errors.
+    * Example SQL check: `SELECT * FROM transformed_table LIMIT 10;`
+
+    **5.2.1. Frequent Errors and Debugging:**
+
+    * **Error:** `Syntax error` in SQL script.
+        * **Debugging:** Review the SQL script for syntax errors. Use a SQL editor with syntax highlighting and error checking.
+    * **Error:** `Divide by zero` or `Invalid data type conversion`.
+        * **Debugging:** Examine the data for invalid values. Add error handling to the SQL script (e.g., using `CASE` statements or `NULLIF`).
+    * **Error:** `Table or view not found`.
+        * **Debugging:** Verify the table name and schema in the SQL script. Check if the table exists and if the user has the necessary permissions.
+    * **Error:** `Out of memory` or `Insufficient resources`.
+        * **Debugging:** Optimize the SQL script. Increase the allocated resources for the transformation process. Check the size of the data being transformed.
+
+**5.3. Data Querying**
+
+1.  **Execute Sample Query:**
+    * Run the sample query `SELECT COUNT(*) FROM transformed_table;`.
+    * Record the query execution time.
+2.  **Evaluate Performance:**
+    * Compare the query execution time against expected performance benchmarks.
+    * Run the query multiple times to get an average execution time.
+    * Run more complex queries if necessary.
+3.  **Verify Results:**
+    * Verify that the query returns the expected count.
+
+    **5.3.1. Frequent Errors and Debugging:**
+
+    * **Error:** `Query timeout`.
+        * **Debugging:** Optimize the query. Add indexes to the tables. Increase the query timeout setting.
+    * **Error:** `Incorrect result set`.
+        * **Debugging:** Verify the query logic. Examine the data for inconsistencies.
+    * **Error:** `Connection refused`.
+        * **Debugging:** Verify the database server's status. Check network connectivity.
+    * **Error:** slow query performance.
+        * **Debugging:** Use the query explain plan to identify bottlenecks. Verify that tables have the correct indexes.
+
+**5.4. Logging and Monitoring**
+
+1.  **Review Logs:**
+    * Check the platform's logs for any errors or warnings during ingestion, transformation, and querying.
+2.  **Monitor System Resources:**
+    * Monitor CPU, memory, and disk usage during the test run.
+    * Monitor network traffic.
+
+**6. Rollback Procedures**
+
+* **Data Ingestion Failure:**
+    * Delete the ingested data from the staging area.
+    * Correct any data or configuration issues.
+    * Retry the ingestion process.
+* **Data Transformation Failure:**
+    * Truncate the transformed table.
+    * Correct the transformation script.
+    * Rerun the transformation.
+* **General Failure:**
+    * Restore the system from a recent backup, if applicable.
+    * Investigate the root cause of the failure.
+    * Document the failure and resolution.

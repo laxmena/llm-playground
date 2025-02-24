@@ -1,0 +1,124 @@
+**AetherStream Context:**
+
+* **Functionality:** AetherStream ingests high-volume data streams from various sources (IoT devices, APIs, etc.), performs real-time transformations and aggregations using AWS Kinesis Data Streams and AWS Lambda, and then delivers the processed data to downstream systems (data warehouses, dashboards).
+* **Architecture:**
+    * Data sources -> AWS Kinesis Data Streams -> AWS Lambda (processing) -> AWS S3/Redshift/Elasticsearch.
+    * Uses CloudWatch for logging and monitoring.
+    * IAM roles for secure access between AWS services.
+
+**AetherStream Runbook: Data Pipeline Failure**
+
+**1. Purpose:**
+
+* To provide a structured approach to diagnosing and resolving failures in the AetherStream real-time data processing pipeline.
+
+**2. Scope:**
+
+* This runbook covers issues related to data ingestion, processing, and delivery within the AetherStream pipeline.
+
+**3. Roles and Responsibilities:**
+
+* **Incident Commander:** Manages the incident, coordinates troubleshooting efforts, and communicates updates.
+* **Pipeline Engineer:** Executes the runbook steps, analyzes logs, and implements fixes.
+* **Data Engineer:** Provides expertise on data transformations and downstream system integrations.
+* **Cloud Operations:** Manages AWS infrastructure and access.
+
+**4. Prerequisites:**
+
+* AWS Management Console access with appropriate IAM roles.
+* AWS CLI and necessary tools (e.g., jq).
+* Access to CloudWatch Logs and Metrics.
+* Familiarity with Kinesis Data Streams, Lambda, and downstream systems.
+
+**5. Failure Scenarios:**
+
+* **5.1. Data Ingestion Failure:**
+    * Source system outage.
+    * Network connectivity issues.
+    * Kinesis Data Stream throttling.
+* **5.2. Lambda Processing Failure:**
+    * Lambda function errors or exceptions.
+    * Lambda timeouts.
+    * IAM role permissions issues.
+    * Lambda code deployment error.
+    * Dependency errors.
+* **5.3. Data Delivery Failure:**
+    * Downstream system outage.
+    * S3 bucket access issues.
+    * Redshift connection errors.
+    * Elasticsearch cluster issues.
+* **5.4. Data Quality Issues:**
+    * Incorrect data transformations in Lambda.
+    * Data schema changes.
+    * Data corruption.
+
+**6. Troubleshooting Steps:**
+
+* **6.1. Monitor CloudWatch Metrics:**
+    * Check Kinesis Data Stream metrics (e.g., `IncomingBytes`, `PutRecords.Success`).
+    * Monitor Lambda metrics (e.g., `Errors`, `Duration`, `Throttles`).
+    * Verify downstream system metrics (e.g., S3 write operations, Redshift query failures).
+* **6.2. Review CloudWatch Logs:**
+    * Examine Kinesis Data Stream logs for ingestion errors.
+    * Analyze Lambda function logs for errors and exceptions.
+    * Check downstream system logs for connection and write errors.
+* **6.3. Verify Service Health:**
+    * Check the status of AWS services (Kinesis, Lambda, S3, Redshift, Elasticsearch).
+    * Verify network connectivity between services.
+* **6.4. Check IAM Roles and Policies:**
+    * Ensure that Lambda functions and other services have the necessary permissions.
+* **6.5. Data Validation:**
+    * Sample data from Kinesis and downstream systems to verify data integrity.
+    * Run data quality checks.
+* **6.6. Code Deployment Verification:**
+    * If a recent code deploy occured, verify the new code, and if needed, roll back to the previous version.
+
+**7. Onboarding Guide:**
+
+* **7.1. Service Overview:**
+    * Explain the AetherStream architecture and data flow.
+    * Provide access to documentation and diagrams.
+* **7.2. AWS Access:**
+    * Grant access to the AWS Management Console and necessary services.
+    * Provide training on using AWS CLI and CloudWatch.
+* **7.3. Monitoring and Alerting:**
+    * Explain how to use CloudWatch dashboards and alerts.
+    * Provide instructions on setting up custom alerts.
+* **7.4. Runbook Training:**
+    * Walk through the runbook and explain troubleshooting steps.
+    * Conduct simulated incident scenarios.
+
+**8. Ticket Metrics:**
+
+* **8.1. Mean Time to Resolution (MTTR):** Track the average time to resolve incidents.
+* **8.2. Incident Frequency:** Monitor the number of incidents per time period.
+* **8.3. Incident Severity:** Categorize incidents based on impact.
+* **8.4. Root Cause Analysis (RCA) Completion:** Track the percentage of incidents with completed RCAs.
+* **8.5. Customer Impact:** Track the number of customers affected by incidents.
+
+**9. FAQ:**
+
+* **Q: How do I check Kinesis Data Stream metrics?**
+    * A: In CloudWatch, go to "Metrics" and select "Kinesis."
+* **Q: How do I view Lambda function logs?**
+    * A: In CloudWatch, go to "Logs" and find the Lambda function's log group.
+* **Q: What IAM permissions are required for Lambda?**
+    * A: The Lambda function needs permissions to access Kinesis, S3, Redshift, and CloudWatch.
+* **Q: How do I roll back a Lambda deployment?**
+    * A: Within the lambda console, you can select previous published versions, and publish that version.
+* **Q: How do I get an alert on Kinesis throttling?**
+    * A: Create a CloudWatch alarm based on the `PutRecords.ThrottledRecords` metric.
+
+**10. Debugging:**
+
+* **10.1. Local Testing:**
+    * Use AWS SAM CLI to simulate Kinesis events and test Lambda functions locally.
+* **10.2. Log Analysis:**
+    * Use CloudWatch Logs Insights to query and filter logs.
+    * Search for error messages and stack traces.
+* **10.3. Remote Debugging:**
+    * Use AWS X-Ray to trace requests and identify bottlenecks.
+    * Use Lambda layers to add debugging libraries.
+* **10.4. Data Sampling:**
+    * Sample data at each stage of the pipeline to identify data quality issues.
+    * Use tools like `jq` to parse JSON data.
